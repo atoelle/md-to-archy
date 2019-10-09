@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+// #!/usr/bin/env node
 
 //var archy = require('archy')
 //var MD = require('markdown-it')
@@ -61,42 +61,41 @@ var tt = mdParsed.reduce((memo, step, i) => {
     memo.nodes = []
     idx.push(0)
   }
+  else if(step.t === 'close'){
+    console.log("step out")
+    idx.pop()
+  }
   else if(step.label && idx.length === 1) {
     console.log("push root")
     memo.nodes.push(step)
     idx[idx.length -1]++
   }
-  else if(step.t === 'close'){
-    console.log("step out")
-    idx.pop()
-  }
   else if(step.t === 'open' && idx.length > 0) {
-    console.log("step in")
-    console.log("memo", memo)
+    console.log(i, "step in")
     var ref = idx.reduce((ref, ii) => {
-      //console.log("ref", ref, "ii", ii)
+      console.log("ref", ref, "ii", ii)
       if(!ref[ii]){
         return ref
       }
-      return ref[ii].nodes
+      return ref[ii]
     }, memo.nodes)
-    console.log(ref)
+    console.log("ref"ref)
     ref.nodes = []
     idx.push(0)
     console.log("memo", memo)
     return memo
   }
-  //else if(step.label && idx.length > 1) {
-  //  console.log("push leaf")
+  else if(step.label && idx.length > 1) {
+    console.log("push leaf")
   //  console.log("idx", idx, "i", i, "memo", memo)
-  //  var ref = idx.reduce((ref, ii) => {
+    var ref = idx.reduce((ref, ii) => {
   //    console.log("ref", ref, "ii", ii)
-  //    return ref[ii].nodes
-  //  }, memo.nodes)
-  //  ref.push(step)
-  //  idx[idx.length -1]++
-  //  return memo
-  //}
+      return ref[ii].nodes
+    }, memo.nodes)
+    ref.push(step)
+    idx[idx.length -1]++
+    return memo
+  }
   //console.log(i+":", t[i],  memo)
   return memo
 }, {})
